@@ -1,4 +1,4 @@
-name: multistep
+name: mnist-job
 channels:
   - defaults
 dependencies:
