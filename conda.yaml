@@ -3,9 +3,8 @@ channels:
   - defaults
 dependencies:
   - python=3.6
-  - pyspark
-  - keras
-  - requests
-  - click
   - pip:
     - mlflow
+    - torch
+    - torchvision
+    - tensorboardX

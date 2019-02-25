@@ -1,33 +1,25 @@
-name: multistep_example
+name: pytorch_tutorial
 
 conda_env: conda.yaml
 
 entry_points:
-  load_raw_data:
-    command: "python load_raw_data.py"
-
-  etl_data:
-    parameters:
-      ratings_csv: path
-    command: "python etl_data.py --ratings-csv {ratings_csv}"
-
-  als:
-    parameters:
-      ratings_data: path
-      max_iter: {type: int, default: 10}
-      reg_param: {type: float, default: 0.1}
-      rank: {type: int, default: 12}
-    command: "python als.py --ratings-data {ratings_data} --max-iter {max_iter} --reg-param {reg_param} --rank {rank}"
-
-  train_keras:
-    parameters:
-      ratings_data: path
-      als_model_uri: string
-      hidden_units: {type: int, default: 20}
-    command: "python train_keras.py --ratings-data {ratings_data} --als-model-uri {als_model_uri} --hidden-units {hidden_units}"
-
   main:
     parameters:
-      als_max_iter: {type: int, default: 10}
-      keras_hidden_units: {type: int, default: 20}
-    command: "python main.py --als-max-iter {als_max_iter} --keras-hidden-units {keras_hidden_units}"
+      batch-size: {type: int, default: 64}
+      test-batch-size: {type: int, default: 1000}
+      epochs: {type: int, default: 10}
+      lr: {type: float, default: 0.02}
+      momentum: {type: float, default: 0.7}
+      enable-cuda: {type: string, default: 'False'}
+      seed: {type: int, default: 5}
+      log-interval: {type: int, default: 100}
+    command: |
+          python mnist_tensorboard_artifact.py \
+            --batch-size {batch-size} \
+            --test-batch-size {test-batch-size} \
+            --epochs {epochs} \
+            --lr {lr} \
+            --momentum {momentum} \
+            --enable-cuda {enable-cuda} \
+            --seed {seed} \
+            --log-interval {log-interval}

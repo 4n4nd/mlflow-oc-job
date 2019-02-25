@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Template
+
+labels:
+  application: ${APPLICATION_NAME}
+
+metadata:
+  name: mlflow-server-template
+
+parameters:
+- description: Application name
+  value: 'mlflow-job-image'
+  name: APPLICATION_NAME
+  required: true
+
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: ${APPLICATION_NAME}
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    dockerImageRepository: ${APPLICATION_NAME}
+    tags:
+    - name: latest
+    lookupPolicy:
+      local: true
+
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: ${APPLICATION_NAME}
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    resources:
+      limits:
+        memory: 2Gi
+        cpu: "1"
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    source:
+      git:
+        uri: "https://github.com/openshift/ruby-hello-world"
+        ref: "master"
+      type: "Dockerfile"
+      # dockerfile: "FROM docker.io/centos/python-36-centos7:latest\nRUN pip install mlflow"
+    strategy:
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
